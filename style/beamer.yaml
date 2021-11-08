@@ -1,0 +1,13 @@
+---
+# delete the title to customise the title page in body.tex
+author: "Your name from `style/beamer.yaml`"
+title: "Presentation title from `style/beamer.yaml`"
+date: \today
+output:
+  beamer_presentation:
+    fig_caption: false
+    fig_crop: false
+classoption:
+    #"aspectratio=169,demo" # disables figures
+    "aspectratio=169"
+---
