@@ -5,8 +5,10 @@
 
 \institute[]{
     \href{https://melbournebioinformatics.org.au}{melbournebioinformatics.org.au}
+    \and
+    \href{https://twitter.com/MelBioInf}{\inlinepng{img/2021 Twitter logo - blue.png} @MelBioInf}
     }
-
+    
 %%%%%%%%%
 % FONTS %
 %%%%%%%%%
@@ -137,6 +139,16 @@
   allcolors=.,
   urlcolor=linkcolour,
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% LATEX-ONLY CENTERING %
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% override problems with pandoc centering when converting from markdown
+\def\begincentre{\begin{centering}}
+\def\endcentre{\end{centering}}
+
 
 %%%%%%%%%%%%%%%%%%%
 % LATEX-ONLY COLS %
@@ -351,3 +363,5 @@
 
 %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%
+
+

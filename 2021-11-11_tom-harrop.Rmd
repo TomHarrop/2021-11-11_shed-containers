@@ -1,0 +1,318 @@
+---
+title: |
+    Practical introduction to Singularity containers
+author: |
+    Tom Harrop
+date: November 11, 2021
+---
+
+## Why use containers?
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.5"}
+
+![](img/logo-e0aba174237dede6b0004b78fbe99b76.png){height=30mm}
+
+:::
+::: {.column width="0.5"}
+
+![](img/vertical-logo-monochromatic.png){height=30mm}
+
+:::
+::::::::::::::
+
+ 
+
+\vspace{5mm}
+
+ 
+
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.2"}
+
+
+
+:::
+::: {.column width="0.8"}
+
+
+\setbeamersize{description width of=(Motivation:)}
+
+Motivation:
+
+:  Use software without installing it
+
+. . . 
+
+\vspace{1ex}
+
+Benefits:
+
+:  Portability, reproducibility
+
+. . . 
+
+\vspace{1ex}
+
+
+Drawbacks:
+
+:  Effort
+
+:::
+::::::::::::::
+
+## Use software without installing it
+
+
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.5"}
+
+\footnotesize
+
+**On my computer**:
+
+```{r samtools_1, engine="bash", echo=TRUE, eval=TRUE, comment = "     "}
+# installed by my OS package manager
+samtools --version
+```
+
+
+:::
+::: {.column width="0.5"}
+
+\footnotesize
+
+**Using a container**:
+
+```{r samtools_2, engine="bash", echo=TRUE, eval=FALSE, comment = "    "}
+singularity exec samtools_1.12.sif \
+    samtools --version
+```
+
+
+```{r samtools_3, engine="bash", echo=FALSE, eval=TRUE, comment = "     "}
+singularity exec samtools_1.12.sif \
+    samtools --version | head -n 3
+```
+
+
+:::
+::::::::::::::
+
+## Get the version you need
+
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.5"}
+
+\footnotesize
+
+**On my computer**:
+
+```{r newtools1, engine="bash", echo=TRUE, eval=TRUE, comment = "     "}
+# installed by my OS package manager
+samtools --version
+```
+
+
+:::
+::: {.column width="0.5"}
+
+\footnotesize
+
+**Using a container**:
+
+```{r newtools2, engine="bash", echo=TRUE, eval=FALSE, comment = "    "}
+singularity exec samtools_1.12.sif \
+    samtools --version
+```
+
+
+```{r newtools3, engine="bash", echo=FALSE, eval=TRUE, comment = "     "}
+singularity exec samtools_1.12.sif \
+    samtools --version | head -n 3
+```
+
+
+:::
+::::::::::::::
+
+## Avoid tricky software installations
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.3"}
+
+![](img/screenshot-funannotate.readthedocs.io-2021.11.09-14_35_42.png){height=70mm}
+
+:::
+::: {.column width="0.7"}
+
+
+
+- lots of dependencies
+
+- not all dependencies are listed
+
+. . .
+
+- need specific versions
+
+- package managers don't always help
+
+. . .
+
+\footnotesize
+
+```{.bash}
+
+singularity run docker://nextgenusfs/funannotate
+
+```
+
+:::
+::::::::::::::
+
+\source{
+     \href{https://funannotate.readthedocs.io/en/latest/dependencies.html\#dependencies}{funannotate.readthedocs.io}
+}
+
+
+## What is a container?
+
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.5"}
+
+![](img/container-vm-whatcontainer_2.png){width=100%}
+
+:::
+::: {.column width="0.5"}
+
+. . .
+
+![](img/docker-containerized-appliction-blue-border_2.png){width=100%}
+
+:::
+::::::::::::::
+
+\source{
+     \href{https://www.docker.com/resources/what-container}{docker.com}
+}
+
+## Docker, or Singularity?
+
+
+## How to use Singularity
+
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.5"}
+
+**1. Install Singularity**
+
+- not too hard to install locally
+- HPCs often have it installed
+- you can ask the admin to install it
+
+\vspace{2ex}
+
+*e.g.* on Spartan:
+
+```{.bash}
+$ module load singularity/3.7.3
+$ singularity --version
+singularity version 3.7.3
+```
+
+:::
+::: {.column width="0.5"}
+
+. . .
+
+**2. Run a container**
+
+- detailed instructions at [singularity.hpcng.org](https://singularity.hpcng.org/user-docs/master/quick_start.html)
+- basic commands is \footnotesize `singularity exec {container URL}  \       {command} {args}` \normalsize
+- usually need some options, *e.g.*
+    - `-B` **b**inds paths to make files available in the container
+    - `--nv` enables GPU support
+    
+:::
+::::::::::::::
+
+## Workflow managers support containers
+
+\footnotesize
+
+**Snakefile**:
+
+```{.python}
+rule trim_adaptors:
+    input:          'data/raw_reads.fastq'
+    output:         'output/trimmed.fastq'
+    container:      'docker://my_repos/trim_adaptors:1.7'
+    shell:          'trim_adaptors --raw_reads={input} > {output}'
+rule run_assembly:
+    input:           'output/trimmed.fastq'
+    output:          'output/assembly.fasta'
+    container:       'docker://my_repos/tidy_assembler:2.9'
+    shell:           'tidy_assembler --reads={input} > {output}'
+```
+
+. . .
+
+**Run the workflow**:
+
+```{.bash}
+snakemake --use-singularity \
+    --singularity-args ...
+```
+
+## Where to find containers
+
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.4"}
+
+![](img/screenshot-hub.docker.com-2021.11.09-16_04_54.png){width=90%}
+
+:::
+::: {.column width="0.6"}
+
+
+- Some developers provide docker containers
+
+```{.bash}
+singularity pull \
+    docker://combinelab/salmon:1.1.0
+```
+
+:::
+::::::::::::::
+
+\sourceleft{
+  \href{https://hub.docker.com/r/combinelab/salmon/tags}{hub.docker.com}}
+  
+## How to choose a software source
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.33"}
+
+**Modules**
+
+:::
+::: {.column width="0.33"}
+
+**Conda *etc.***
+
+:::
+::: {.column width="0.33"}
+
+**Containers**
+
+:::
+::::::::::::::
+
+
+\source{
+     \href{https://spiediedocs.binghamton.edu/docs/conda_singularity_modules.html}{spiediedocs.binghamton.edu}
+}
