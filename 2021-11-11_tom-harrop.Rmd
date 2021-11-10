@@ -7,7 +7,35 @@ author: |
 date: November 11, 2021
 ---
 
-## Robust analysis practices
+## Reproducibility
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.5"}
+
+![](img/reproducibility-graphic-online1.jpeg){height=50mm}
+
+:::
+::: {.column width="0.5"}
+
+![](img/reproducibility-graphic-online6.jpg){height=50mm}
+
+:::
+::::::::::::::
+
+
+\source{
+    Jenny Bryan \href{https://youtu.be/7oyiPBjLAWY}{https://youtu.be/7oyiPBjLAWY} \&
+    Nature News, \href{http://www.nature.com/news/1-500-scientists-lift-the-lid-on-reproducibility-1.19970}{10.1038/533452a}}
+
+::: notes
+\tiny
+- from 2016
+- if we want our analysis to be reproducible it's up to us to do it
+- getting much easier now
+:::
+
+
+## Analysis practices
 
 :::::::::::::: {.columns align="top"}
 ::: {.column width="0.5"}
@@ -15,7 +43,8 @@ date: November 11, 2021
 **Guidelines**:
 
 1. Don't modify raw data
-2. Record the code (with version control)
+2. Record the steps  
+   (with version control)
 3. Capture the computing environment
 
 :::
@@ -41,6 +70,11 @@ date: November 11, 2021
 - Jess covered reproducible practices
 - saving your steps in a notebook and keeping them under version control
 - Bobbie covered workflow managers (also under version control)
+
+\vspace{2ex}
+
+- no one will try to reproduce your analysis
+- beneficiary is future me
 :::
 
 ## Why use containers?
@@ -447,6 +481,14 @@ singularity pull \
      \href{https://github.com/TomHarrop/container-build-template}{TomHarrop/container-build-template}
 }
 
+::: notes
+\tiny
+- specify base operating system,
+- dependencies
+- how to install the software itself
+- anything like specific environment variables you need can be put in this file too
+:::
+
 ## Build them yourself!
 
 ![](img/screenshot-github.com-2021.11.10-11_31_06.png){height=70mm}
@@ -454,6 +496,14 @@ singularity pull \
 \source{
      \href{https://github.com/TomHarrop/container-build-template}{TomHarrop/container-build-template}
 }
+
+::: notes
+\tiny
+- chosen to host this one on github container repository
+- can also do the same thing with docker hub
+- other repos exist
+- i've got a template at this url for building them on github automatcally
+:::
 
 ## Some barriers to container usage
 
