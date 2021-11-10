@@ -2,9 +2,46 @@
 title: |
     Practical introduction to Singularity containers
 author: |
-    Tom Harrop
+    Tom Harrop  
+    [tharrop@unimelb.edu.au](mailto:tharrop@unimelb.edu.au)
 date: November 11, 2021
 ---
+
+## Robust analysis practices
+
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.5"}
+
+**Guidelines**:
+
+1. Don't modify raw data
+2. Record the code (with version control)
+3. Capture the computing environment
+
+:::
+::: {.column width="0.5"}
+
+- Data management:
+    - see Gayle Philip's slides
+- Project management, source control:
+    - Jessica Chung's slides
+- Workflow management:
+    - Bobbie Shaban's slides
+- Reproducible computing:
+    - use containers
+
+:::
+::::::::::::::
+
+::: notes
+\tiny
+- basic guidelines for reproducible bioinformatics
+- Gayle covered management of the raw data
+- naming, etc
+- Jess covered reproducible practices
+- saving your steps in a notebook and keeping them under version control
+- Bobbie covered workflow managers (also under version control)
+:::
 
 ## Why use containers?
 
@@ -62,6 +99,14 @@ Drawbacks:
 :::
 ::::::::::::::
 
+::: notes
+\tiny
+- there are other container systems
+- and other methods for a reproducible workflow
+- portability: take your container anywhere and run it
+- reproducibility: same container, same results
+:::
+
 ## Use software without installing it
 
 
@@ -72,11 +117,13 @@ Drawbacks:
 
 **On my computer**:
 
-```{r samtools_1, engine="bash", echo=TRUE, eval=TRUE, comment = "     "}
-# installed by my OS package manager
-samtools --version
+```{r samtools_1, engine="bash", echo=TRUE, eval=FALSE}
+# not provided for my OS
+guppy_basecaller --version
 ```
 
+
+`    guppy_basecaller: command not found`
 
 :::
 ::: {.column width="0.5"}
@@ -85,20 +132,19 @@ samtools --version
 
 **Using a container**:
 
-```{r samtools_2, engine="bash", echo=TRUE, eval=FALSE, comment = "    "}
-singularity exec samtools_1.12.sif \
-    samtools --version
+```{r samtools_2, engine="bash", echo=TRUE, eval=TRUE, comment = "    "}
+singularity exec guppy_5.0.16.sif \
+    guppy_basecaller --version
 ```
-
-
-```{r samtools_3, engine="bash", echo=FALSE, eval=TRUE, comment = "     "}
-singularity exec samtools_1.12.sif \
-    samtools --version | head -n 3
-```
-
 
 :::
 ::::::::::::::
+
+::: notes
+\tiny
+- previous versions of guppy could only be installed on really outdated operating systems
+- wrestle with dependencies to get it installed on your desktop computer?
+:::
 
 ## Get the version you need
 
@@ -136,6 +182,13 @@ singularity exec samtools_1.12.sif \
 
 :::
 ::::::::::::::
+
+::: notes
+\tiny
+- samtools UI has changed
+- same command, different version, different results
+:::
+
 
 ## Avoid tricky software installations
 
@@ -176,6 +229,13 @@ singularity run docker://nextgenusfs/funannotate
      \href{https://funannotate.readthedocs.io/en/latest/dependencies.html\#dependencies}{funannotate.readthedocs.io}
 }
 
+::: notes
+\tiny
+- conflicts between python version and other software that uses python
+- conda environment wouldn't solve
+- developer: "it works on my mac"
+- recently provided a docker container which can be run through singularity
+:::
 
 ## What is a container?
 
@@ -199,8 +259,69 @@ singularity run docker://nextgenusfs/funannotate
      \href{https://www.docker.com/resources/what-container}{docker.com}
 }
 
+::: notes
+\tiny
+- virtual machine: multiple virtual operating systems running on a single host
+- each operating system boots on the host and takes up resources on the host
+- container software allows you to package the userspace into a file
+- run a process in the user space provided in the file
+- example: a particular piece of software that depends on libraries installed in ubuntu
+- want to run on a centOS server (different operating systems)
+- singularity and docker allow you to run that software, using the userspace stored in the container file
+- think of it as a large file that contains your software, and the dependencies you need to run it
+- called an image
+- does anyone want to correct any of that
+- or make it more precise?
+:::
+
 ## Docker, or Singularity?
 
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.5"}
+
+- Docker
+    - popular on cloud platforms
+    - effectively requires root to run*
+    - doesn't respect job schedulers*
+
+\footnotesize
+
+\vspace{2ex}
+
+\* may have been fixed
+
+:::
+::: {.column width="0.5"}
+
+. . .
+
+- Singularity
+    - runs on HPC
+    - popular in research / edu?
+    - **supports Docker containers**
+
+
+:::
+::::::::::::::
+
+\vspace{2ex}
+
+. . .
+
+\setbeamersize{description width of=(Suggested workflow:)}
+
+Suggested workflow:
+
+:  build (or obtain) your containers in Docker format and use Singularity to run them
+
+::: notes
+\tiny
+- docker was not designed to run on shared resources
+- not an issue if you're running it on your own Amazon instance
+- no one else would be using it
+- docker talks to its own daemon so resources are controlled outside of job schedulers like slurm
+- singularity launches child processes under your user account, so you don't automatically get root access
+:::
 
 ## How to use Singularity
 
@@ -239,6 +360,13 @@ singularity version 3.7.3
 :::
 ::::::::::::::
 
+::: notes
+\tiny
+- it's nice to have it on your computer while you're developing containers
+- you have to compile it but the instructions are clear
+- don't usually run singularity interactively like this
+:::
+
 ## Workflow managers support containers
 
 \footnotesize
@@ -267,6 +395,16 @@ snakemake --use-singularity \
     --singularity-args ...
 ```
 
+::: notes
+\tiny
+- THIS IS WHERE I REALLY FIND IT USEFUL
+- JUST DROP IN THE CONTAINER URL WITHOUT CHANGING ANYTHING
+- WF manager handles downloading container etc
+- this file is under version control e.g. post on github
+- you can put the url of your workflow file in your publication
+- you then have all the steps, and the software  environment you ran them under, documented
+:::
+
 ## Where to find containers
 
 
@@ -291,28 +429,156 @@ singularity pull \
 
 \sourceleft{
   \href{https://hub.docker.com/r/combinelab/salmon/tags}{hub.docker.com}}
-  
-## How to choose a software source
+
+## You can search for images on [hub.docker.com](https://hub.docker.com/)
+
+![](img/screenshot-hub.docker.com-2021.11.10-10_29_30.png){height=70mm}
+
+## Check with the software developer
+
+![](img/screenshot-github.com-2021.11.10-10_38_50.png){height=70mm}
+
+
+## Build them yourself!
+
+![](img/screenshot-github.com-2021.11.10-11_30_50.png){height=70mm}
+
+\source{
+     \href{https://github.com/TomHarrop/container-build-template}{TomHarrop/container-build-template}
+}
+
+## Build them yourself!
+
+![](img/screenshot-github.com-2021.11.10-11_31_06.png){height=70mm}
+
+\source{
+     \href{https://github.com/TomHarrop/container-build-template}{TomHarrop/container-build-template}
+}
+
+## Some barriers to container usage
+
+- Building containers yourself can be painful
+- Duplication of effort
+- Some software **shouldn't** go in a container because of "unfortunate licensing issues"  
+  - DTU software *e.g.* `rnammer`, `tmhmm`  
+  - GATech: `GeneMark` 
+  - GIRInst's `RepBase`
+- Getting `Singularity` installed
+
+\source{See the DTU's license \href{http://www.cbs.dtu.dk/cgi-bin/sw_request?rnammer}{here}}
+
+## When to use containers
 
 :::::::::::::: {.columns align="center"}
 ::: {.column width="0.33"}
 
-**Modules**
+\centering
+
+**Modules**:
 
 :::
 ::: {.column width="0.33"}
 
-**Conda *etc.***
+\centering
+
+**Conda, `venv`, *etc.***:
 
 :::
 ::: {.column width="0.33"}
 
-**Containers**
+
+\centering
+
+**Containers**:
 
 :::
 ::::::::::::::
 
 
+
+:::::::::::::: {.columns align="top"}
+::: {.column width="0.33"}
+
+. . .
+
+\footnotesize
+
+```{.bash}
+module load \
+    samtools/1.12
+```
+
+\normalsize
+
+- installed by the sysadmin
+- properly configured
+- easy
+
+:::
+::: {.column width="0.33"}
+
+. . .
+
+\footnotesize
+
+```{.bash}
+conda install -c \
+    bioconda samtools 
+```
+
+\normalsize
+
+- latest packages 
+- testing in a specific environment
+
+:::
+::: {.column width="0.33"}
+
+. . .
+
+\footnotesize
+
+```{.bash}
+singularity run \
+    samtools.sif 
+```
+
+\normalsize
+
+- reproducibility
+- collaboration
+- portability
+- performance?
+
+:::
+::::::::::::::
+
 \source{
      \href{https://spiediedocs.binghamton.edu/docs/conda_singularity_modules.html}{spiediedocs.binghamton.edu}
 }
+
+::: notes
+\tiny
+- i don't know how important the performance differences are for using containers
+- can't use e.g. compiler optimisations that would be available for locally installed software
+- don't know if this is a practical or theoretical difference
+:::
+
+
+## Get started with containers
+
+- How I use containers:
+    1. **Write Docker recipes** (one tool, one recipe)
+    2. Remotely build Docker image store it permanently
+    3. Use with Singularity via a workflow manager
+    
+\vspace{2ex}
+    
+- Singularity has good documentation: [quick start](https://singularity.hpcng.org/user-docs/master/quick_start.html)
+- Docker documentation is ... extensive: [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+- Integrating with workflow managers is easy
+
+::: notes
+\tiny
+- talk to melbourne bioinformatics or MDAP!
+:::
