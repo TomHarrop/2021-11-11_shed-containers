@@ -632,3 +632,54 @@ singularity run \
 \tiny
 - talk to melbourne bioinformatics or MDAP!
 :::
+
+## Building containers on GitHub
+
+\scriptsize
+
+\centering
+
+[TomHarrop/container-build-template](https://github.com/TomHarrop/container-build-template)
+
+\normalsize
+
+\vspace{2ex}
+
+![](img/screenshot-github.com-2021.11.25-11_03_52.png){height=40mm}
+
+## Docker and Singularity example
+
+\scriptsize
+
+\centering
+
+[TomHarrop/container-flye](https://github.com/TomHarrop/container-flye)
+
+\normalsize
+
+\vspace{2ex}
+
+- generally use the Docker container in Singularity
+- some old versions can't login to GHCR
+
+## Is this useful?
+
+:::::::::::::: {.columns align="center"}
+::: {.column width="0.5"}
+
+>>> In your experience do developers appreciate pull requests so that everyone has access to the container from the official page - or do containers take a bit of time to maintain so developers would be less keen?  
+   
+\- question from Alistair Legione
+
+
+:::
+::: {.column width="0.5"}
+
+- do enough people use these setups?
+- is Conda preferred?
+- PRs back to the software developer?
+
+
+:::
+::::::::::::::
+
