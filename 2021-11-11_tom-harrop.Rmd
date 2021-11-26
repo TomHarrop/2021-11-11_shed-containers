@@ -189,9 +189,14 @@ singularity exec guppy_5.0.16.sif \
 
 **On my computer**:
 
-```{r newtools1, engine="bash", echo=TRUE, eval=TRUE, comment = "     "}
+```{r newtools1, engine="bash", echo=TRUE, eval=FALSE, comment = "    "}
 # installed by my OS package manager
 samtools --version
+```
+
+
+```{r newtools4, engine="bash", echo=FALSE, eval=TRUE, comment = "     "}
+samtools --version | head -n 3
 ```
 
 
